@@ -5,7 +5,7 @@ import streamlit as st
 from pathlib import Path
 
 st.set_page_config(
-    page_title="RetailPulse | AI Analytics Platform",
+    page_title="RetailPulse | AI Analytics",
     page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -14,85 +14,171 @@ st.set_page_config(
 # ── Global CSS ────────────────────────────────────────────────────
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 html, body, [class*="css"] {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Outfit', sans-serif !important;
 }
 
-/* Dark gradient background */
+/* Premium animated background */
 .stApp {
-    background: linear-gradient(135deg, #0a0e1a 0%, #0d1527 50%, #0a1628 100%);
+    background: radial-gradient(circle at 15% 50%, rgba(20, 30, 48, 1), rgba(15, 23, 42, 1));
+    background-size: 200% 200%;
+    animation: bg-shift 20s ease infinite;
 }
 
-/* Sidebar */
+@keyframes bg-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Sidebar styling */
 [data-testid="stSidebar"] {
-    background: linear-gradient(180deg, #0d1b2a 0%, #112240 100%);
-    border-right: 1px solid rgba(100,180,255,0.1);
+    background: rgba(15, 23, 42, 0.8) !important;
+    backdrop-filter: blur(20px) !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-[data-testid="stSidebar"] .stMarkdown h1,
-[data-testid="stSidebar"] .stMarkdown h2,
-[data-testid="stSidebar"] .stMarkdown h3 {
-    color: #64b5f6;
+[data-testid="stSidebar"] .stMarkdown h1, h2, h3 {
+    color: #e2e8f0;
 }
 
-/* Metric cards */
+/* Glassmorphism Metric Cards */
 [data-testid="metric-container"] {
-    background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(100,180,255,0.08) 100%);
-    border: 1px solid rgba(100,180,255,0.2);
-    border-radius: 16px;
-    padding: 1rem;
-    backdrop-filter: blur(10px);
-    transition: transform 0.2s ease, border-color 0.2s ease;
+    background: rgba(30, 41, 59, 0.5) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 20px !important;
+    padding: 1.5rem !important;
+    backdrop-filter: blur(16px) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    overflow: hidden;
+    position: relative;
 }
+
+[data-testid="metric-container"]::before {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%; width: 50%; height: 100%;
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
+    transform: skewX(-20deg);
+    transition: 0.5s;
+}
+
 [data-testid="metric-container"]:hover {
-    transform: translateY(-2px);
-    border-color: rgba(100,180,255,0.5);
+    transform: translateY(-5px) scale(1.02) !important;
+    border-color: rgba(56, 189, 248, 0.5) !important;
+    box-shadow: 0 15px 40px -5px rgba(56, 189, 248, 0.2) !important;
 }
 
-/* Headers */
-h1, h2, h3 { color: #e8f4fd !important; }
+[data-testid="metric-container"]:hover::before {
+    left: 200%;
+}
 
-/* Tabs */
-[data-testid="stTab"] { color: #90caf9; }
+/* Typography Enhancements */
+h1, h2, h3 { color: #f8fafc !important; font-weight: 700 !important; letter-spacing: -0.02em !important; }
 
-/* Plotly charts background */
-.js-plotly-plot { border-radius: 12px; }
+/* Custom Feature Cards */
+.feature-card {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.6), rgba(15, 23, 42, 0.8));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    backdrop-filter: blur(20px);
+    transition: all 0.4s ease;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    min-height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
 
-/* Cards */
-.metric-card {
-    background: linear-gradient(135deg, rgba(13,27,42,0.9), rgba(17,34,64,0.9));
-    border: 1px solid rgba(100,180,255,0.2);
-    border-radius: 16px;
-    padding: 1.5rem;
+.feature-card::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%; width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.03) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.feature-card:hover::after {
+    opacity: 1;
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    border-color: rgba(56, 189, 248, 0.4);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0 20px rgba(56, 189, 248, 0.1);
+}
+
+.icon-wrapper {
+    font-size: 2.5rem;
     margin-bottom: 1rem;
-    backdrop-filter: blur(10px);
+    display: inline-block;
+    padding: 10px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
 }
 
-.kpi-number {
-    font-size: 2.2rem;
+.feature-title {
+    font-weight: 700;
+    color: #f8fafc;
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+}
+
+.feature-desc {
+    color: #94a3b8;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-weight: 300;
+}
+
+/* Cool neon text for hero */
+.hero-title {
+    font-size: 4.5rem;
     font-weight: 800;
-    background: linear-gradient(135deg, #64b5f6, #42a5f5);
+    background: linear-gradient(to right, #38bdf8, #818cf8, #c084fc);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
 }
 
-.badge-green { background: rgba(72,199,142,0.2); color: #48c78e; border-radius: 20px; padding: 2px 12px; font-size: 0.8rem; font-weight: 600; }
-.badge-red   { background: rgba(255,99,99,0.2);  color: #ff6363; border-radius: 20px; padding: 2px 12px; font-size: 0.8rem; font-weight: 600; }
-.badge-yellow{ background: rgba(255,189,46,0.2); color: #ffbd2e; border-radius: 20px; padding: 2px 12px; font-size: 0.8rem; font-weight: 600; }
-
-.stButton button {
-    background: linear-gradient(135deg, #1565c0, #1976d2) !important;
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    transition: all 0.2s ease !important;
+.hero-subtitle {
+    color: #94a3b8;
+    font-size: 1.4rem;
+    margin-top: 1rem;
+    font-weight: 300;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
 }
-.stButton button:hover {
-    transform: translateY(-1px) !important;
-    box-shadow: 0 4px 20px rgba(21,101,192,0.4) !important;
+
+/* Dataset badge */
+.dataset-badge {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 20px;
+    padding: 1.5rem 3rem;
+    margin-top: 3rem;
+    backdrop-filter: blur(10px);
+    display: inline-block;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: all 0.3s;
+}
+
+.dataset-badge:hover {
+    border-color: rgba(56, 189, 248, 0.5);
+    transform: translateY(-3px);
 }
 </style>
 """, unsafe_allow_html=True)
@@ -100,28 +186,30 @@ h1, h2, h3 { color: #e8f4fd !important; }
 # ── Sidebar ───────────────────────────────────────────────────────
 with st.sidebar:
     st.markdown("""
-    <div style='text-align:center; padding: 1rem 0;'>
-        <div style='font-size:2.5rem;'>⚡</div>
-        <div style='font-size:1.4rem; font-weight:800; color:#64b5f6;'>RetailPulse</div>
-        <div style='font-size:0.75rem; color:#90caf9; margin-top:4px;'>AI-Powered Analytics</div>
+    <div style='text-align:center; padding: 2rem 0 1rem 0;'>
+        <div style='font-size:3.5rem; margin-bottom: 10px; animation: pulse 2s infinite;'>⚡</div>
+        <div style='font-size:1.8rem; font-weight:800; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>RetailPulse</div>
+        <div style='font-size:0.85rem; color:#94a3b8; margin-top:5px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase;'>Analytics Engine</div>
     </div>
-    <hr style='border-color:rgba(100,180,255,0.2);'>
+    <hr style='border-color:rgba(255,255,255,0.05); margin: 20px 0;'>
     """, unsafe_allow_html=True)
 
-    st.markdown("### 📊 Navigation")
+    st.markdown("### 🧭 Navigation")
     st.markdown("""
-    Use the **pages** in the sidebar to explore:
-    - 🏠 **Overview** — KPI Summary
-    - 📈 **Forecasting** — Demand Predictions
-    - 👥 **Segmentation** — Customer Clusters
-    - ⚠️ **Churn Analysis** — At-Risk Retailers
-    - 📦 **Inventory** — Reorder Recommendations
-    - 📤 **Export** — Download Reports
-    """)
+    <div style='padding-left: 10px; line-height: 2;'>
+        <span style='color:#64748b; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;'>Explore App</span><br>
+        <span style='font-size:1.1rem;'>🏠</span> <b style='color:#e2e8f0;'>Overview</b><br>
+        <span style='font-size:1.1rem;'>📈</span> <b style='color:#e2e8f0;'>Forecasting</b><br>
+        <span style='font-size:1.1rem;'>👥</span> <b style='color:#e2e8f0;'>Segmentation</b><br>
+        <span style='font-size:1.1rem;'>⚠️</span> <b style='color:#e2e8f0;'>Churn Analysis</b><br>
+        <span style='font-size:1.1rem;'>📦</span> <b style='color:#e2e8f0;'>Inventory</b><br>
+        <span style='font-size:1.1rem;'>📤</span> <b style='color:#e2e8f0;'>Export</b>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.markdown("<hr style='border-color:rgba(100,180,255,0.2);'>", unsafe_allow_html=True)
+    st.markdown("<hr style='border-color:rgba(255,255,255,0.05); margin: 30px 0 20px 0;'>", unsafe_allow_html=True)
     st.markdown("""
-    <div style='font-size:0.75rem; color:#546e7a; text-align:center;'>
+    <div style='font-size:0.75rem; color:#475569; text-align:center; font-weight: 300;'>
         Powered by Zidio Development<br>
         Data Science & Analytics · 2026
     </div>
@@ -129,17 +217,11 @@ with st.sidebar:
 
 # ── Home Page ─────────────────────────────────────────────────────
 st.markdown("""
-<div style='text-align:center; padding: 3rem 0 2rem 0;'>
-    <div style='font-size:3.5rem; margin-bottom:0.5rem;'>⚡</div>
-    <h1 style='font-size:3rem; font-weight:800; background:linear-gradient(135deg,#64b5f6,#42a5f5,#90caf9);
-               -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin:0;'>
-        RetailPulse
-    </h1>
-    <p style='color:#90caf9; font-size:1.2rem; margin-top:0.5rem; font-weight:300;'>
-        AI-Powered Customer Analytics & Demand Forecasting Platform
-    </p>
-    <p style='color:#546e7a; font-size:0.9rem; margin-top:0.3rem;'>
-        Predictive Demand • Customer Segmentation • Churn Analysis • Inventory Optimization
+<div style='text-align:center; padding: 4rem 0 3rem 0;'>
+    <div style='font-size:4.5rem; margin-bottom:1rem;'>🌌</div>
+    <h1 class='hero-title'>Intelligence Meets Retail</h1>
+    <p class='hero-subtitle'>
+        Uncover hidden patterns, predict future demand, and optimize your inventory with state-of-the-art AI.
     </p>
 </div>
 """, unsafe_allow_html=True)
@@ -148,32 +230,32 @@ st.markdown("""
 col1, col2, col3, col4 = st.columns(4)
 
 features = [
-    ("📈", "Demand Forecasting", "30-day ahead predictions using ARIMA + ETS ensemble models", "#1565c0"),
-    ("👥", "Customer Segments", "RFM-based K-Means clustering identifying 5 distinct retailer personas", "#1b5e20"),
-    ("⚠️", "Churn Detection", "XGBoost classifier with SHAP explainability for at-risk retailers", "#b71c1c"),
-    ("📦", "Inventory AI", "EOQ + safety stock optimization to eliminate stockouts", "#e65100"),
+    ("📈", "Demand Forecasting", "30-day ahead predictions using sophisticated ensemble models.", "#38bdf8"),
+    ("👥", "Customer Segments", "RFM-based K-Means clustering identifying 5 core personas.", "#34d399"),
+    ("⚠️", "Churn Detection", "XGBoost classifier with SHAP explainability matrices.", "#f87171"),
+    ("📦", "Inventory AI", "Automated EOQ & safety stock optimization workflows.", "#fbbf24"),
 ]
 
 for col, (icon, title, desc, color) in zip([col1, col2, col3, col4], features):
     with col:
         st.markdown(f"""
-        <div class='metric-card' style='border-left: 3px solid {color}40; min-height:160px;'>
-            <div style='font-size:2rem; margin-bottom:0.5rem;'>{icon}</div>
-            <div style='font-weight:700; color:#e8f4fd; font-size:1rem; margin-bottom:0.5rem;'>{title}</div>
-            <div style='color:#78909c; font-size:0.82rem; line-height:1.4;'>{desc}</div>
+        <div class='feature-card'>
+            <div class='icon-wrapper' style='color: {color}; box-shadow: inset 0 0 20px {color}20;'>{icon}</div>
+            <div class='feature-title'>{title}</div>
+            <div class='feature-desc'>{desc}</div>
         </div>
         """, unsafe_allow_html=True)
 
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown("### 👈 Select a page from the sidebar to explore the platform")
-
 st.markdown("""
-<div style='background:linear-gradient(135deg,rgba(21,101,192,0.15),rgba(13,71,161,0.1));
-            border:1px solid rgba(100,180,255,0.2); border-radius:16px; padding:1.5rem; margin-top:1rem;'>
-    <div style='color:#64b5f6; font-weight:700; margin-bottom:0.5rem;'>📊 Dataset: Campa Cola Distribution Network</div>
-    <div style='color:#78909c; font-size:0.9rem;'>
-        Real-world transactional data · 806 Retailers · 2,033 Orders · 43 Products · 8,803 Order Line Items
-        <br>Data Period: Dec 2025 – Feb 2026 | South India Distribution Network
+<div style='text-align: center;'>
+    <div class='dataset-badge'>
+        <div style='color:#38bdf8; font-weight:700; margin-bottom:0.5rem; letter-spacing: 1px; text-transform: uppercase;'>
+            <span style='margin-right: 5px; font-size:1.2rem;'>📊</span> Live Dataset Active
+        </div>
+        <div style='color:#e2e8f0; font-size:1rem; font-weight: 400; margin-top:10px;'>
+            <strong>Campa Cola Network</strong> · 806 Retailers · 2,033 Orders · 43 Products<br>
+            <span style='font-size: 0.85rem; color: #64748b; margin-top: 8px; display: inline-block;'>Dec 2025 – Feb 2026 | South India</span>
+        </div>
     </div>
 </div>
 """, unsafe_allow_html=True)
