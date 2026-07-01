@@ -24,7 +24,7 @@ from src.optimization.inventory import build_inventory_recommendations
 PROCESSED = Path("data/processed")
 PROCESSED.mkdir(parents=True, exist_ok=True)
 
-mlflow.set_tracking_uri("mlruns")
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("RetailPulse")
 
 
