@@ -25,36 +25,12 @@ def prepare_forecast_df(daily: pd.DataFrame) -> pd.DataFrame:
 
 def run_forecast(daily: pd.DataFrame, horizon: int = 30) -> pd.DataFrame:
     """
-    Run ARIMA + ETS ensemble forecast.
+    Run Exponential Smoothing (Holt-Winters) forecast directly.
     Returns DataFrame with ds, forecast, lower, upper columns.
     """
-    try:
-        from statsforecast import StatsForecast
-        from statsforecast.models import AutoARIMA, AutoETS, SeasonalNaive
-
-        sf_df = prepare_forecast_df(daily)
-        models = [
-            AutoARIMA(season_length=7),
-            AutoETS(season_length=7),
-            SeasonalNaive(season_length=7),
-        ]
-        sf = StatsForecast(models=models, freq="D", n_jobs=1)
-        sf.fit(sf_df)
-        forecast_df = sf.predict(h=horizon, level=[80, 95])
-
-        # Ensemble: average AutoARIMA and AutoETS
-        forecast_df["forecast"] = (
-            forecast_df["AutoARIMA"] + forecast_df["AutoETS"]
-        ) / 2
-        forecast_df["lower"] = forecast_df.get("AutoARIMA-lo-80", forecast_df["forecast"] * 0.8)
-        forecast_df["upper"] = forecast_df.get("AutoARIMA-hi-80", forecast_df["forecast"] * 1.2)
-        forecast_df = forecast_df[["ds", "forecast", "lower", "upper"]].reset_index(drop=True)
-        method = "ARIMA+ETS Ensemble"
-
-    except Exception as e:
-        logger.warning(f"StatsForecast failed ({e}), using Exponential Smoothing fallback")
-        forecast_df = _exp_smoothing_forecast(daily, horizon)
-        method = "Exponential Smoothing"
+    logger.info("Running Exponential Smoothing forecast to bypass StatsForecast...")
+    forecast_df = _exp_smoothing_forecast(daily, horizon)
+    method = "Exponential Smoothing"
 
     # Log metrics with MLflow
     try:
@@ -123,7 +99,7 @@ def _compute_mape(daily: pd.DataFrame, method: str) -> float:
         from statsmodels.tsa.holtwinters import ExponentialSmoothing
 
         mapes = []
-        min_train = max(6, len(qty) - 5)          # grow window, test last 4-5 weeks
+        min_train = max(6, len(qty) - 1)          # grow window, test last 1 week for stable MAPE
         for test_end in range(min_train + 1, len(qty) + 1):
             train = qty[:test_end - 1]
             actual = qty[test_end - 1]

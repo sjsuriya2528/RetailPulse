@@ -3,6 +3,7 @@ RetailPulse – Streamlit Dashboard Main Entry
 """
 import streamlit as st
 from pathlib import Path
+from sidebar import render_sidebar
 
 st.set_page_config(
     page_title="RetailPulse | AI Analytics",
@@ -184,78 +185,69 @@ h1, h2, h3 { color: #f8fafc !important; font-weight: 700 !important; letter-spac
 """, unsafe_allow_html=True)
 
 # ── Sidebar ───────────────────────────────────────────────────────
-with st.sidebar:
-    st.markdown("""
-    <div style='text-align:center; padding: 2rem 0 1rem 0;'>
-        <div style='font-size:3.5rem; margin-bottom: 10px; animation: pulse 2s infinite;'>⚡</div>
-        <div style='font-size:1.8rem; font-weight:800; background: linear-gradient(to right, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>RetailPulse</div>
-        <div style='font-size:0.85rem; color:#94a3b8; margin-top:5px; font-weight: 300; letter-spacing: 2px; text-transform: uppercase;'>Analytics Engine</div>
-    </div>
-    <hr style='border-color:rgba(255,255,255,0.05); margin: 20px 0;'>
-    """, unsafe_allow_html=True)
+selected_page = render_sidebar(default_index=0)
 
-    st.markdown("### 🧭 Navigation")
+if selected_page == "Home":
+    # ── Home Page ─────────────────────────────────────────────────────
     st.markdown("""
-    <div style='padding-left: 10px; line-height: 2;'>
-        <span style='color:#64748b; font-size:0.8rem; text-transform:uppercase; letter-spacing:1px;'>Explore App</span><br>
-        <span style='font-size:1.1rem;'>🏠</span> <b style='color:#e2e8f0;'>Overview</b><br>
-        <span style='font-size:1.1rem;'>📈</span> <b style='color:#e2e8f0;'>Forecasting</b><br>
-        <span style='font-size:1.1rem;'>👥</span> <b style='color:#e2e8f0;'>Segmentation</b><br>
-        <span style='font-size:1.1rem;'>⚠️</span> <b style='color:#e2e8f0;'>Churn Analysis</b><br>
-        <span style='font-size:1.1rem;'>📦</span> <b style='color:#e2e8f0;'>Inventory</b><br>
-        <span style='font-size:1.1rem;'>📤</span> <b style='color:#e2e8f0;'>Export</b>
+    <div style='text-align:center; padding: 4rem 0 3rem 0;'>
+        <div style='font-size:4.5rem; margin-bottom:1rem;'>🌌</div>
+        <h1 class='hero-title'>Intelligence Meets Retail</h1>
+        <p class='hero-subtitle'>
+            Uncover hidden patterns, predict future demand, and optimize your inventory with state-of-the-art AI.
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<hr style='border-color:rgba(255,255,255,0.05); margin: 30px 0 20px 0;'>", unsafe_allow_html=True)
+    # Feature cards
+    col1, col2, col3, col4 = st.columns(4)
+
+    features = [
+        ("📈", "Demand Forecasting", "30-day ahead predictions using sophisticated ensemble models.", "#38bdf8"),
+        ("👥", "Customer Segments", "RFM-based K-Means clustering identifying 5 core personas.", "#34d399"),
+        ("⚠️", "Churn Detection", "XGBoost classifier with SHAP explainability matrices.", "#f87171"),
+        ("📦", "Inventory AI", "Automated EOQ & safety stock optimization workflows.", "#fbbf24"),
+    ]
+
+    for col, (icon, title, desc, color) in zip([col1, col2, col3, col4], features):
+        with col:
+            st.markdown(f"""
+            <div class='feature-card'>
+                <div class='icon-wrapper' style='color: {color}; box-shadow: inset 0 0 20px {color}20;'>{icon}</div>
+                <div class='feature-title'>{title}</div>
+                <div class='feature-desc'>{desc}</div>
+            </div>
+            """, unsafe_allow_html=True)
+
     st.markdown("""
-    <div style='font-size:0.75rem; color:#475569; text-align:center; font-weight: 300;'>
-        Powered by Zidio Development<br>
-        Data Science & Analytics · 2026
+    <div style='text-align: center;'>
+        <div class='dataset-badge'>
+            <div style='color:#38bdf8; font-weight:700; margin-bottom:0.5rem; letter-spacing: 1px; text-transform: uppercase;'>
+                <span style='margin-right: 5px; font-size:1.2rem;'>📊</span> Live Dataset Active
+            </div>
+            <div style='color:#e2e8f0; font-size:1rem; font-weight: 400; margin-top:10px;'>
+                <strong>Campa Cola Network</strong> · 806 Retailers · 2,033 Orders · 43 Products<br>
+                <span style='font-size: 0.85rem; color: #64748b; margin-top: 8px; display: inline-block;'>Dec 2025 – Feb 2026 | South India</span>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-# ── Home Page ─────────────────────────────────────────────────────
-st.markdown("""
-<div style='text-align:center; padding: 4rem 0 3rem 0;'>
-    <div style='font-size:4.5rem; margin-bottom:1rem;'>🌌</div>
-    <h1 class='hero-title'>Intelligence Meets Retail</h1>
-    <p class='hero-subtitle'>
-        Uncover hidden patterns, predict future demand, and optimize your inventory with state-of-the-art AI.
-    </p>
-</div>
-""", unsafe_allow_html=True)
-
-# Feature cards
-col1, col2, col3, col4 = st.columns(4)
-
-features = [
-    ("📈", "Demand Forecasting", "30-day ahead predictions using sophisticated ensemble models.", "#38bdf8"),
-    ("👥", "Customer Segments", "RFM-based K-Means clustering identifying 5 core personas.", "#34d399"),
-    ("⚠️", "Churn Detection", "XGBoost classifier with SHAP explainability matrices.", "#f87171"),
-    ("📦", "Inventory AI", "Automated EOQ & safety stock optimization workflows.", "#fbbf24"),
-]
-
-for col, (icon, title, desc, color) in zip([col1, col2, col3, col4], features):
-    with col:
-        st.markdown(f"""
-        <div class='feature-card'>
-            <div class='icon-wrapper' style='color: {color}; box-shadow: inset 0 0 20px {color}20;'>{icon}</div>
-            <div class='feature-title'>{title}</div>
-            <div class='feature-desc'>{desc}</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-st.markdown("""
-<div style='text-align: center;'>
-    <div class='dataset-badge'>
-        <div style='color:#38bdf8; font-weight:700; margin-bottom:0.5rem; letter-spacing: 1px; text-transform: uppercase;'>
-            <span style='margin-right: 5px; font-size:1.2rem;'>📊</span> Live Dataset Active
-        </div>
-        <div style='color:#e2e8f0; font-size:1rem; font-weight: 400; margin-top:10px;'>
-            <strong>Campa Cola Network</strong> · 806 Retailers · 2,033 Orders · 43 Products<br>
-            <span style='font-size: 0.85rem; color: #64748b; margin-top: 8px; display: inline-block;'>Dec 2025 – Feb 2026 | South India</span>
-        </div>
-    </div>
-</div>
-""", unsafe_allow_html=True)
+elif selected_page == "Overview":
+    from views import overview
+    overview.show()
+elif selected_page == "Forecasting":
+    from views import forecasting
+    forecasting.show()
+elif selected_page == "Segmentation":
+    from views import segmentation
+    segmentation.show()
+elif selected_page == "Churn Analysis":
+    from views import churn_analysis
+    churn_analysis.show()
+elif selected_page == "Inventory":
+    from views import inventory
+    inventory.show()
+elif selected_page == "Export":
+    from views import export
+    export.show()
