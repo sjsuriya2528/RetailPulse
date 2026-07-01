@@ -2,8 +2,15 @@
 RetailPulse – Streamlit Dashboard Main Entry
 """
 import streamlit as st
+import subprocess
 from pathlib import Path
 from sidebar import render_sidebar
+
+# Auto-run pipeline if processed data is missing (for Streamlit Cloud)
+processed_kpi = Path(__file__).parent.parent / "data" / "processed" / "kpi.parquet"
+if not processed_kpi.exists():
+    with st.spinner("Initializing data pipeline on first boot..."):
+        subprocess.run(["python", "pipeline.py"], check=True)
 
 st.set_page_config(
     page_title="RetailPulse | AI Analytics",
